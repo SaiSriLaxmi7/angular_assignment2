@@ -50,7 +50,13 @@
             }
           },
           "defaultConfiguration": "development"
-        }
+        },
+        "deploy": {
+  "builder": "angular-cli-ghpages:deploy",
+  "options": {
+"baseHref": "/angular_assignment2/"
+  }
+}
       }
     }
   },

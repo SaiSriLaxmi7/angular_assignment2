@@ -1,35 +1,35 @@
 name: Deploy Angular to GitHub Pages
-
 on:
   push:
-    branches:
-      - main  # Change if your default branch has a different name
+    branches: [ main ]
 
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
     steps:
-      # Checkout the repo
       - uses: actions/checkout@v4
 
-      # Setup Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: npm
+          cache-dependency-path: Angular_Assignment/package-lock.json
 
-      # Install dependencies
-      - run: npm ci
+      - name: Install deps
+        run: npm ci
+        working-directory: Angular_Assignment
 
-      # Build the Angular app for production with correct base href
-      - run: npm run build -- --configuration production --base-href=/angular_assignment2/
+      - name: Build (prod)
+        run: npm run build -- --configuration production
+        working-directory: Angular_Assignment
 
-      # Copy index.html to 404.html for SPA routing
-      - run: cp dist/angular-assignment/index.html dist/angular-assignment/404.html
+      - name: SPA fallback (404.html)
+        run: cp dist/angular-assignment/index.html dist/angular-assignment/404.html
+        working-directory: Angular_Assignment
 
-      # Deploy to GitHub Pages
-      - uses: peaceiris/actions-gh-pages@v3
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: dist/angular-assignment
+          publish_dir: Angular_Assignment/dist/angular-assignment
           enable_jekyll: false
